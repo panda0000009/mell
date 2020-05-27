@@ -4,9 +4,9 @@
     <tab-control :titles="['流行', '新款', '精选']"
                   @tabClick = "tabClick"
                   ref = "tabControl1"
-                  class = "tab-control" v-show="isTabFixed"   />
-    <scroll class="content"
-            ref="scroll"
+                  class = "tab-control" v-show="isTabFixed"/>
+    <Scroll class="content"
+            ref="Scroll"
             :probe-type="3"
             @scroll="contentScroll"
             :pull-up-load="true"
@@ -18,7 +18,7 @@
                    :titles="['流行', '新款', '精选']"
                    @tabClick="tabClick"/>
       <good-list :goods="showGoods"/>
-    </scroll>
+    </Scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -31,7 +31,7 @@
   import NavBar from 'components/common/navbar/NavBar'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodList from 'components/content/goods/GoodsList'
-  import Scroll from 'components/common/scroll/Scroll'
+  import Scroll from 'common/scroll/Scroll'
   import BackTop from 'components/content/backTop/BackTop'
 
   import { getHomeMultidata, getHomeGoods } from "network/home"
@@ -53,9 +53,9 @@
         banners: [],
         recommends: [],
         goods: {
-          'pop': {page: 0, list: []},
-          'new': {page: 0, list: []},
-          'sell': {page: 0, list: []},
+          'pop': {page: 0, list:[]},
+          'new': {page: 0, list:[]},
+          'sell': {page: 0, list:[]},
         },
         currentType: 'pop',
         isShowBackTop: false,
@@ -70,8 +70,8 @@
       }
     },
       activated () {
-        this.$refs.scroll.scrollTo(0,this.saveY,0)
-        this.$refs.scroll.refresh()
+        this.$refs.Scroll.scrollTo(0,this.saveY,0)
+        this.$refs.Scroll.refresh()
       },
     created() {
       // 1.请求多个数据
@@ -84,7 +84,7 @@
     },
     mounted () {
       // 图片加载完成的事件监听
-      const refresh = debounce(this.$refs.scroll.refresh,50)
+      const refresh = debounce(this.$refs.Scroll.refresh,50)
       this.$bus.$on('itemImageLoad',() =>{
         refresh()
       })
@@ -105,8 +105,9 @@
             this.currentType = 'sell'
             break
         }
-        this.$refs.tabControl2.currtentIndex = index;
         this.$refs.tabControl1.currtentIndex = index;
+        this.$refs.tabControl2.currtentIndex = index;
+
       },
       backClick() {
         this.$refs.scroll.scrollTo(0, 0)
@@ -117,7 +118,9 @@
         //2 决定tabControl是否吸顶(position:fixed)
         this.isTabFixed = (-position.y) > this.tabOffsetTop
       },
+      //加载更多
       loadMore() {
+        // console.log('---------');
         this.getHomeGoods(this.currentType)
       },
       swiperImageLoad() {
@@ -138,8 +141,8 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
+          this.$refs.Scroll.finishPullUp()
 
-          this.$refs.scroll.finishPullUp()
         })
       }
     }

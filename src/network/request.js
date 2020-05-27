@@ -2,8 +2,9 @@ import axios from 'axios'
 export function request(config){
   // 1创建axios的实例
   const instance = axios.create({
-    //接口这里不提供，可以自己写，也可以加qq联系1104747986
-    baseURL:"http://152.136.185.210:8000",
+    //这里的接口是错的，接口这里不提供，可以自己写，也可以加qq联系1104747986
+    // baseURL:"http://152.136.185.210:8000",
+    baseURL:"http://152.136.185.210:8000/api/n3",
     timeout:5000
   })
 
