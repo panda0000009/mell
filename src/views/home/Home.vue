@@ -5,8 +5,8 @@
                   @tabClick = "tabClick"
                   ref = "tabControl1"
                   class = "tab-control" v-show="isTabFixed"/>
-    <Scroll class="content"
-            ref="Scroll"
+    <scroll class="content"
+            ref="scroll"
             :probe-type="3"
             @scroll="contentScroll"
             :pull-up-load="true"
@@ -18,7 +18,7 @@
                    :titles="['流行', '新款', '精选']"
                    @tabClick="tabClick"/>
       <good-list :goods="showGoods"/>
-    </Scroll>
+    </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -70,8 +70,11 @@
       }
     },
       activated () {
-        this.$refs.Scroll.scrollTo(0,this.saveY,0)
-        this.$refs.Scroll.refresh()
+        this.$refs.scroll.scrollTo(0,this.saveY,0)
+        this.$refs.scroll.refresh()
+      },
+      deactivated () {
+        this.saveY = this.$refs.scroll.getScrollY()
       },
     created() {
       // 1.请求多个数据
@@ -84,7 +87,7 @@
     },
     mounted () {
       // 图片加载完成的事件监听
-      const refresh = debounce(this.$refs.Scroll.refresh,50)
+      const refresh = debounce(this.$refs.scroll.refresh,50)
       this.$bus.$on('itemImageLoad',() =>{
         refresh()
       })
@@ -141,7 +144,7 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
-          this.$refs.Scroll.finishPullUp()
+          this.$refs.scroll.finishPullUp()
 
         })
       }
