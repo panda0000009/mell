@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <keep-alive>
+  <keep-alive exclude="Detail">
   <router-view></router-view>
   </keep-alive>
   <!-- tab-bar不能放在keep-view中，不然直接被隐藏掉 -->
